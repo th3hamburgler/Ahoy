@@ -1,6 +1,6 @@
 # AHOY!
 
-Ahoy! is a CodeIgniter library for managing you sites navigational menus.
+Ahoy! is a CodeIgniter library for managing you sites navigational menus. Add menu items and generate a list of links.
 
 ## Features:
 
