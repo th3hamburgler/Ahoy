@@ -35,7 +35,6 @@
 class Ahoy {
 
 	private $items;	// array of menu items
-	public static $base_url= '';
 
    /**
 	* Constructor - Sets Ahoy Preferences
@@ -87,10 +86,7 @@ class Ahoy {
 	* @return	object
 	*/
 	public function initialize($items=array(), $config=array())
-	{	
-		if(element('base_url', $config))
-			static::$base_url = element('base_url', $config);
-		
+	{
 		$this->add_menu_items($items);
 		
 		return $this;
@@ -431,11 +427,8 @@ class Ahoy_Item {
 	{
 		if(is_int($controller))
 			$this->uri = FALSE;
-		else if(Ahoy::$base_url)
-		 	$this->uri = Ahoy::$base_url.'/'.$controller;
 		else
 			$this->uri = $controller;
-			
 	}
 
    /**
