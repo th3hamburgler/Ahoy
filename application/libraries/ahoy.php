@@ -249,6 +249,8 @@ class Ahoy_Item {
 	public $uri;
 	public $dropdown;
 
+	static $uri_depth=2;
+
    /**
 	* Constructor - Creates a new menu item
 	*
@@ -471,9 +473,9 @@ class Ahoy_Item {
 	{
 		$CI =& get_instance();
 		
-		$uri = explode('/', $this->uri);
+		$uri = array_slice(explode('/', $this->uri), 0, static::$uri_depth);
 		
-		$current_uri = array_values($CI->uri->segment_array());
+		$current_uri = array_slice($CI->uri->segment_array(), 0, static::$uri_depth);
 		
 		if($current_uri == $uri)
 		{
