@@ -35,18 +35,19 @@
 class Ahoy {
 
 	private $items;	// array of menu items
+	public static $base_url= '';
 
    /**
 	* Constructor - Sets Ahoy Preferences
 	*
 	* The constructor can be passed an array of config values
 	*/
-	public function __construct($items=array())
-	{	
+	public function __construct($items=array(), $config=array())
+	{
 		$this->_load_required_helpers();
 		
 		if ($items)
-			$this->initialize($items);
+			$this->initialize($items, $config);
 		
 		
 		log_message('debug', "Ahoy Class Initialized");
@@ -82,10 +83,14 @@ class Ahoy {
 	*
 	* @access	public
 	* @param	array
+	* @param	array
 	* @return	object
 	*/
-	public function initialize($items=array())
-	{
+	public function initialize($items=array(), $config=array())
+	{	
+		if(element('base_url', $config))
+			static::$base_url = element('base_url', $config);
+		
 		$this->add_menu_items($items);
 		
 		return $this;
@@ -371,7 +376,6 @@ class Ahoy_Item {
 		return html_element('li', $anchor.$dropdown, array('class' => 'dropdown'));
 	}
 
-
    /**
 	* adds the icon element to the label if set
 	*
@@ -427,8 +431,11 @@ class Ahoy_Item {
 	{
 		if(is_int($controller))
 			$this->uri = FALSE;
+		else if(Ahoy::$base_url)
+		 	$this->uri = Ahoy::$base_url.'/'.$controller;
 		else
 			$this->uri = $controller;
+			
 	}
 
    /**
