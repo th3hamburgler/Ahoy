@@ -115,8 +115,9 @@ class Ahoy {
 	* @param	array
 	* @return	string
 	*/
-	public function tabs($attr=array('class' => 'nav nav-tabs'))
+	public function tabs($attr=array())
 	{
+		$attr = array_merge(array('class' => 'nav nav-tabs'), $attr);
 		return $this->generate($attr);
 	}
 
@@ -127,8 +128,9 @@ class Ahoy {
 	* @param	array
 	* @return	string
 	*/
-	public function pills($attr=array('class' => 'nav nav-pills'))
+	public function pills($attr=array())
 	{
+		$attr = array_merge(array('class' => 'nav nav-pills'), $attr);
 		return $this->generate($attr);
 	}
 
@@ -139,8 +141,9 @@ class Ahoy {
 	* @param	array
 	* @return	string
 	*/
-	public function stacked_tabs($attr=array('class' => 'nav nav-tabs nav-stacked'))
+	public function stacked_tabs($attr=array())
 	{
+		$attr = array_merge(array('class' => 'nav nav-tabs nav-stacked'), $attr);
 		return $this->generate($attr);
 	}
 
@@ -151,8 +154,9 @@ class Ahoy {
 	* @param	array
 	* @return	string
 	*/
-	public function stacked_pills($attr=array('class' => 'nav nav-pills nav-stacked'))
+	public function stacked_pills($attr=array())
 	{
+		$attr = array_merge(array('class' => 'nav nav-pills nav-stacked'), $attr);
 		return $this->generate($attr);
 	}
 
@@ -163,8 +167,9 @@ class Ahoy {
 	* @param	array
 	* @return	string
 	*/
-	public function nav_list($attr=array('class' => 'nav nav-list'))
+	public function nav_list($attr=array())
 	{
+		$attr = array_merge(array('class' => 'nav nav-list'), $attr);
 		return $this->generate($attr);
 	}
 	
@@ -175,8 +180,9 @@ class Ahoy {
 	* @param	array
 	* @return	string
 	*/
-	public function navbar($attr=array('class' => 'nav'))
+	public function navbar($attr=array())
 	{
+		$attr = array_merge(array('class' => 'nav'), $attr);
 		return $this->generate($attr);
 	}
 
@@ -189,8 +195,9 @@ class Ahoy {
 	* @param	string
 	* @return	string
 	*/
-	public function breadcrumb($attr=array('class' => 'breadcrumb'), $divider=' <span class="divider">/</span>')
+	public function breadcrumb($attr=array(), $divider=' <span class="divider">/</span>')
 	{
+		$attr = array_merge(array('class' => 'breadcrumb'), $attr);
 		$n=0;
 		foreach($this->items as $item)
 		{
