@@ -282,6 +282,8 @@ class Ahoy_Item {
 		
 		$this->set_icon($spec);
 		
+		$this->set_class($spec);
+		
 		$this->initilize_dropdown($spec);
 		
 		$this->check_active();
@@ -319,7 +321,7 @@ class Ahoy_Item {
 		$this->get_icon();
 		
 		$attr = array(
-			'class'	=> implode('', $this->class),
+			'class'	=> implode(' ', $this->class),
 		);
 		
 		if(substr($this->uri, 0, 1) == '#')
@@ -346,7 +348,7 @@ class Ahoy_Item {
 		$this->class[] = 'nav-header';
 		
 		$attr = array(
-			'class'	=> implode('', $this->class),
+			'class'	=> implode(' ', $this->class),
 		);
 		return html_element('li', $this->label, $attr);
 	}
@@ -361,7 +363,7 @@ class Ahoy_Item {
 	public function generate_dropdown()
 	{
 		$attr = array(
-			'class' 		=>'dropdown-toggle',
+			'class' 		=>'dropdown-toggle '.implode(' ', $this->class),
 			'data-toggle'	=> 'dropdown',
 			'href'			=> '#',
 		);		
@@ -381,7 +383,27 @@ class Ahoy_Item {
 	public function set_icon($attr=array())
 	{
 		$this->icon = element('icon', $attr);
+		if($this->icon)
+			unset($attr['icon']);
 	}
+
+   /**
+	* adds the icon class attrubutes
+	* if they are set as string convert to arrays
+	* for easier manimulation
+	*
+	* @access	public
+	* @return	void
+	*/
+	public function set_class($attr=array())
+	{
+		$this->class = element('class', $attr);
+		if(!is_array($this->class))
+			$this->class = explode(' ', $this->class);
+		if($this->class)
+			unset($attr['class']);
+	}
+
    /**
 	* adds the icon element to the label if set
 	*
