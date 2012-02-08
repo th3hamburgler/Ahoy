@@ -244,6 +244,7 @@ class Ahoy_Item {
 	public $active	= false;
 	public $anchor_prefix;
 	public $anchor_suffix;
+	public $attr	= array();
 	public $class	= array();
 	public $icon;
 	public $label;
@@ -278,13 +279,15 @@ class Ahoy_Item {
 		
 		$this->set_uri($controller);
 		
-		$this->set_label($controller, $spec);
+		$spec = $this->set_label($controller, $spec);
 		
-		$this->set_icon($spec);
+		$spec = $this->set_icon($spec);
 		
-		$this->set_class($spec);
+		$spec = $this->initilize_dropdown($spec);
 		
-		$this->initilize_dropdown($spec);
+		$spec = $this->set_class($spec);
+		
+		$spec = $this->set_attributes($spec);
 		
 		$this->check_active();
 		
@@ -319,21 +322,19 @@ class Ahoy_Item {
 	public function generate_single()
 	{
 		$this->get_icon();
-		
-		$attr = array(
-			'class'	=> implode(' ', $this->class),
-		);
+		$a_attr		= $this->attr;
+		$li_attr	= array('class' => implode(' ', $this->class));
 		
 		if(substr($this->uri, 0, 1) == '#')
-			$href = $this->uri;
+			$a_attr['href'] = $this->uri;
 		else if(substr($this->uri, 0, 4) == 'http')
-			$href = $this->uri;
+			$a_attr['href'] = $this->uri;
 		else
-			$href = site_url($this->uri);
+			$a_attr['href'] = site_url($this->uri);
 		
-		$anchor = html_element('a', $this->label, array('href' => $href));
+		$anchor = html_element('a', $this->label, $a_attr);
 		
-		return html_element('li', $this->anchor_prefix.$anchor.$this->anchor_suffix, $attr);
+		return html_element('li', $this->anchor_prefix.$anchor.$this->anchor_suffix, $li_attr);
 	}
 	
    /**
@@ -375,16 +376,34 @@ class Ahoy_Item {
 	}
 
    /**
+	* Sets the label property
+	* Humanize the controller string if not set
+	*
+	* @access	private
+	* @param	string
+	* @param	array
+	* @return	void
+	*/
+	private function set_label($controller, $spec)
+	{
+		$this->label = element('label', $spec, humanize($controller));
+		if($this->label)
+			unset($spec['label']);
+		return $spec;
+	}
+	
+   /**
 	* adds the icon element to the label if set
 	*
 	* @access	public
 	* @return	void
 	*/
-	public function set_icon($attr=array())
+	public function set_icon($spec=array())
 	{
-		$this->icon = element('icon', $attr);
+		$this->icon = element('icon', $spec);
 		if($this->icon)
-			unset($attr['icon']);
+			unset($spec['icon']);
+		return $spec;
 	}
 
    /**
@@ -395,13 +414,36 @@ class Ahoy_Item {
 	* @access	public
 	* @return	void
 	*/
-	public function set_class($attr=array())
+	public function set_class($spec=array())
 	{
-		$this->class = element('class', $attr);
+		$this->class = element('class', $spec);
 		if(!is_array($this->class))
 			$this->class = explode(' ', $this->class);
 		if($this->class)
-			unset($attr['class']);
+			unset($spec['class']);
+		return $spec;
+	}
+
+   /**
+	* Sets the anchor attributes. Only allow valid html5 attributes
+	* including anything beging with "data-"
+	*
+	* @access	public
+	* @param	array
+	* @return	array
+	*/
+	public function set_attributes($spec=array())
+	{
+		$valid_attr = array('hreflang', 'media', 'rel', 'target', 'type', 'accesskey', 'class', 'contenteditable', 'contextmenu', 'dir', 'draggable', 'dropzone', 'hidden', 'lang', 'spellcheck', 'style', 'tabindex', 'title',);
+		
+		foreach($spec as $k => $v) {
+			if(in_array($k, $valid_attr) || strtolower(substr($k, 0, 5)) == 'data-') {
+				$this->attr[$k] = $v;
+				unset($spec[$k]);
+			}
+		}
+		
+		return $spec;
 	}
 
    /**
@@ -454,20 +496,6 @@ class Ahoy_Item {
 	}
 
    /**
-	* Sets the label property
-	* Humanize the controller string if not set
-	*
-	* @access	private
-	* @param	string
-	* @param	array
-	* @return	void
-	*/
-	private function set_label($controller, $spec)
-	{
-		$this->label = element('label', $spec, humanize($controller));
-	}
-
-   /**
 	* Looks in the spec array to see if
 	* this contains a list of child items
 	*
@@ -478,11 +506,15 @@ class Ahoy_Item {
 	private function initilize_dropdown($spec)
 	{
 		// look for items element - means this is a sub menu
-		if(element('items', $spec))
+		if(element('items', $spec)) {
 			$this->dropdown = new Ahoy(element('items', $spec));
-		// loo to see if the spec is in fact a list of items
-		else if(!element('label', $spec))
-			$this->dropdown = new Ahoy($spec);
+			unset($spec['items']);
+		}
+		// look to see if the spec is in fact a list of items
+		//else if(!element('label', $spec) AND count($spec)>0)
+		//	$this->dropdown = new Ahoy($spec);
+		
+		return $spec;
 	}
 
    /**
