@@ -251,7 +251,7 @@ class Ahoy_Item {
 	public $uri;
 	public $dropdown;
 
-	static $uri_depth=2;
+	static $uri_depth=3;
 
    /**
 	* Constructor - Creates a new menu item
@@ -523,16 +523,12 @@ class Ahoy_Item {
 	* @access	private
 	* @return	void
 	*/
-	private function check_active()
-	{
+	private function check_active() {
 		$CI =& get_instance();
-		
-		$uri = array_slice(explode('/', $this->uri), 0, static::$uri_depth);
-		
-		$current_uri = array_slice($CI->uri->segment_array(), 0, static::$uri_depth);
-		
-		if($current_uri == $uri)
-		{
+		$url			= str_replace(base_url(), '', $this->uri);
+		$uri			= array_slice(explode('/', $url), 0, static::$uri_depth);
+		$current_uri	= array_slice($CI->uri->segment_array(), 0, static::$uri_depth);
+		if ($current_uri == $uri) {
 			$this->active = true;
 			$this->class[] = 'active';
 		}
