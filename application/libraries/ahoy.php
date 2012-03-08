@@ -34,7 +34,7 @@
 
 class Ahoy {
 
-	private $items;	// array of menu items
+	private $items = array();	// array of menu items
 
    /**
 	* Constructor - Sets Ahoy Preferences
